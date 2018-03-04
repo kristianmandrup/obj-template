@@ -1,6 +1,7 @@
 import * as YAML from 'json2yaml'
 import * as stringifyObject from 'stringify-object'
 import * as deepmerge from 'deepmerge'
+import * as tobj from 'template-obj'
 
 function merge(base: Object, ext: Object) {
   return Object.assign(base, ext || {})
@@ -15,35 +16,17 @@ export function objTemplate(filePath: string, options: any = {}) {
     key
   } = options
   key = key || 'template'
+  options.sandbox = {
+    tobj
+  }
   const ctx = runSandboxedCodeAt(filePath, options)
   return transformTree(ctx[key], options.params, options.opts)
 }
 
-export function transformTree(treeDef: any, params: any = {}, opts: any = {}) {
+export function transformObj(result: any, type: string, options: any) {
   const {
-    base,
-    parts,
-    mode,
     transform
-  } = treeDef
-  const override = treeDef.override || opts.override
-
-  const options: any = override ? merge(treeDef.opts, opts) : merge(opts, treeDef.opts)
-  const keys = Object.keys(parts)
-  const result = keys.reduce((acc, key) => {
-    const partFun = parts[key]
-    const $params = mode === 'split' ? params[key] || params : params
-    const part = partFun($params)
-
-    if (key === '$root$') {
-      acc = deepmerge(acc, part)
-    } else {
-      acc[key] = part
-    }
-    return acc
-  }, base)
-
-  const type = options.type || 'json'
+  } = options
 
   switch (type) {
     case 'obj':
@@ -65,5 +48,42 @@ export function transformTree(treeDef: any, params: any = {}, opts: any = {}) {
       }
       return customTransform(result, options)
   }
+}
+
+const defaults = {
+  transformObj
+}
+
+export function transformTree(treeDef: any, params: any = {}, opts: any = {}) {
+  const {
+    base,
+    parts,
+    mode,
+  } = treeDef
+  let {
+    transformObj
+  } = opts
+  const override = treeDef.override || opts.override
+  opts.transformObj = opts.transformObj || transformObj
+
+  let options: any = override ? merge(treeDef.opts, opts) : merge(opts, treeDef.opts)
+  options.defaults = defaults
+
+  const keys = Object.keys(parts)
+  const result = keys.reduce((acc, key) => {
+    const partFun = parts[key]
+    const $params = mode === 'split' ? params[key] || params : params
+    const part = partFun($params)
+
+    if (key === '$root$') {
+      acc = deepmerge(acc, part)
+    } else {
+      acc[key] = part
+    }
+    return acc
+  }, base)
+
+  const type = options.type || 'json'
+  return opts.transformObj(result, type, options)
 }
 
