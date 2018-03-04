@@ -1,5 +1,7 @@
 # Object Template
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/obj-template.svg)](https://greenkeeper.io/)
+
 *Object Template* is a new type of template/transformer specifically designed to create nested structures such as `js`, `JSON` or `YAML` objects without the unnatural fit of traditional text based templates.
 
 ## Usage
