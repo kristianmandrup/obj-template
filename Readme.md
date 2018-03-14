@@ -1,6 +1,6 @@
 # Object Templator
 
-*Object Templator* is a new type of template engine specifically designed to create nested structures such as `js`, `JSON` or `YAML` objects without the unnatural fit of traditional text based templates.
+*Object Templator* is a new type of template engine specifically designed to create nested structures such as `js`, `JSON`, `YAML` or `XML` data structures without the unnatural fit of traditional text based templates.
 
 Uses sandboxed `js` via [run-sandboxed](https://www.npmjs.com/package/run-sandboxed)
 
@@ -221,7 +221,28 @@ transformTree(treeDef, params, opts)
 
 Some alternatives you could consider for simple object templating. These engines could be combined with [run-sandboxed](https://www.npmjs.com/package/run-sandboxed) and then transformed to the final result.
 
+- [selecttransform](https://www.npmjs.com/package/stjs)
 - [template-obj](https://www.npmjs.com/package/template-obj)
+- [obj-template](https://www.npmjs.com/package/obj-template)
+
+### select transform
+
+See [selecttransform](https://selecttransform.github.io/site/)
+
+```js
+cons sel = ST.select(data, function(key, val){
+      return key === 'sites';
+    })
+    .transformWith({
+      "items": {
+        "{{#each sites}}": {
+          "tag": "<a href='{{url}}'>{{name}}</a>"
+        }
+      }
+    })
+```
+
+### template obj
 
 ```js
 var templateObj = require("template-obj");
@@ -231,7 +252,7 @@ return templateObj({
 });
 ```
 
-- [obj-template](https://www.npmjs.com/package/obj-template)
+### obj template
 
 ```js
 var objTemplate = require('obj-template');
