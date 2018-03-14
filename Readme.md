@@ -31,7 +31,7 @@ ctx.template = {
     author({
       author
     }) {
-      return _.humanize(author)
+      return return author === 'unknown' ? undefined : { name: _.humanize(author) }
     },
     repo({
       username,
@@ -44,6 +44,13 @@ ctx.template = {
   }
 }
 ```
+
+## Filtering out parts
+
+You can have a part return `null` or `undefined` in order to completely filter out that part.
+In the example above, in the `author` part, we return `undefined` if author is `unknown` in order to filter out that part entirely in that particular case.
+
+You can pass an options `keepAllParts: true` to override this filtering behavior, to keep the output of all parts no matter what. We don't (yet) support partial filtering of parts. Either you opt to filter them out (default) or not.
 
 ### API
 

@@ -1,6 +1,6 @@
 {
   "name": "object-templator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Template an object by running sandboxed code",
   "main": "dist/src",
   "scripts": {
@@ -33,6 +33,7 @@
   "dependencies": {
     "deepmerge": "^2.0.1",
     "json2yaml": "^1.1.0",
+    "object-to-xml": "^1.1.0",
     "powerdash": "^1.1.0",
     "run-sandboxed": "^0.1.1",
     "stringify-object": "^3.2.2"

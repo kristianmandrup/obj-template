@@ -21,9 +21,6 @@
   },
   "exclude": [
     "node_modules",
-    "build",
-    "acceptance-tests",
-    "jest",
-    "src/setupTests.ts"
+    "dist"
   ]
 }
