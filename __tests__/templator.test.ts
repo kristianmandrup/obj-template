@@ -17,6 +17,10 @@ const opts = {
   yaml: {
     type: 'yaml',
     override: true,
+  },
+  xml: {
+    type: 'xml',
+    override: true,
   }
 }
 
@@ -33,12 +37,17 @@ function create(params: any) {
     params,
     opts: opts.yaml
   }
+  const xml = {
+    params,
+    opts: opts.xml
+  }
 
 
   return {
     json,
     js,
-    yaml
+    yaml,
+    xml
   }
 }
 

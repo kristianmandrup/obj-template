@@ -62,5 +62,4 @@ describe('transformTree', () => {
     const result = transformTree(ctx[key], config)
     expect(result).toMatch(/exports/)
   })
-
 })

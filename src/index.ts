@@ -2,9 +2,14 @@ import * as YAML from 'json2yaml'
 import * as stringifyObject from 'stringify-object'
 import * as deepmerge from 'deepmerge'
 import * as obj2XML from 'object-to-xml'
+import * as isObj from 'isobject'
 
 function merge(base: Object, ext: Object) {
   return Object.assign(base, ext || {})
+}
+
+function isEmptyObj(value: any) {
+  return Object.keys(value).length === 0
 }
 
 import {
@@ -12,15 +17,11 @@ import {
 } from 'run-sandboxed'
 
 export function objTemplate(filePath: string, options: any = {}) {
-  let {
-    key
-  } = options
-  key = key || 'template'
-  // TODO: fix merge in run-sandboxed
-  // options.sandbox = {
-  // }
-  const ctx = runSandboxedCodeAt(filePath, options)
-  return transformTree(ctx[key], options.params, options.opts)
+  const result = runSandboxedCodeAt(filePath, options)
+  if (!isObj(result)) {
+    throw new Error(`Invalid template result (not an object): ${result}`)
+  }
+  return transformTree(result, options.params, options.opts)
 }
 
 export function transformObj(result: any, type: string, options: any) {
@@ -60,13 +61,17 @@ function notSet(value: any) {
 }
 
 export function transformTree(treeDef: any, params: any = {}, opts: any = {}) {
+  if (!isObj(treeDef) || isEmptyObj(treeDef)) return '{}'
+
   const {
-    base,
-    parts,
+    base = {},
+    parts = {},
     mode,
   } = treeDef
+
   const override = treeDef.override || opts.override
   opts.transformObj = opts.transformObj || transformObj
+  treeDef.opts = treeDef.opts || {}
 
   let options: any = override ? merge(treeDef.opts, opts) : merge(opts, treeDef.opts)
   options.defaults = defaults
